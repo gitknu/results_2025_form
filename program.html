@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Програми підвищення кваліфікації менеджерів науки 2025</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --knu-red: #8B0000;
+            --variant-1-color: #8B0000; /* Red for Hard Skills */
+            --variant-2-color: #0056b3; /* Blue for Leadership */
+            --variant-3-color: #2e7d32; /* Green for Innovation */
+            --text-dark: #333;
+            --bg-light: #f9f9f9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e0e0e0;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Print Button styling */
+        .no-print {
+            margin-bottom: 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 210mm;
+        }
+        
+        .btn-print {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        
+        .btn-print:hover {
+            transform: translateY(-2px);
+            background-color: #000;
+        }
+
+        /* A4 Page Container */
+        .page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm; /* A4 height */
+            padding: 20mm;
+            margin: 0 auto 30px auto;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* HEADER STYLES */
+        header {
+            border-bottom: 3px solid; /* Color defined in specific variants */
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .header-text h1 {
+            font-size: 22px;
+            margin: 0 0 5px 0;
+            text-transform: uppercase;
+            color: #444;
+        }
+
+        .header-text h2 {
+            font-size: 26px;
+            margin: 0;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .header-text h3 {
+            font-size: 16px;
+            margin: 5px 0 0 0;
+            font-weight: 400;
+            color: #666;
+        }
+
+        .logo-box {
+            text-align: center;
+            color: var(--knu-red);
+        }
+        
+        .logo-box i {
+            font-size: 45px;
+        }
+        
+        .logo-box div {
+            font-size: 10px;
+            font-weight: bold;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        /* CONTENT STYLES */
+        .meta-block {
+            display: flex;
+            gap: 20px;
+            background-color: var(--bg-light);
+            padding: 15px;
+            border-left: 5px solid #ccc; /* Color defined later */
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .meta-item {
+            flex: 1;
+        }
+
+        .meta-label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 3px;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #666;
+        }
+
+        .desc-block {
+            margin-bottom: 30px;
+            line-height: 1.5;
+            font-size: 14px;
+            text-align: justify;
+        }
+
+        /* TABLE STYLES */
+        .schedule-block {
+            margin-bottom: 30px;
+        }
+
+        .day-header {
+            color: white;
+            padding: 8px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px 4px 0 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            border: 1px solid #eee;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            font-weight: 700;
+            color: #444;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .col-time { width: 15%; font-weight: bold; color: #555; }
+        .col-topic { width: 50%; }
+        .col-speaker { width: 35%; font-style: italic; color: #555; }
+
+        .badge {
+            display: inline-block;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-bottom: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: 1px solid #ccc;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20mm;
+            left: 20mm;
+            right: 20mm;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+            font-size: 10px;
+            color: #999;
+            text-align: center;
+        }
+
+        /* VARIANT SPECIFIC COLORS */
+        /* Variant 1 */
+        .v1-theme header { border-color: var(--variant-1-color); }
+        .v1-theme h2 { color: var(--variant-1-color); }
+        .v1-theme .meta-block { border-left-color: var(--variant-1-color); }
+        .v1-theme .day-header { background-color: var(--variant-1-color); }
+        
+        /* Variant 2 */
+        .v2-theme header { border-color: var(--variant-2-color); }
+        .v2-theme h2 { color: var(--variant-2-color); }
+        .v2-theme .meta-block { border-left-color: var(--variant-2-color); }
+        .v2-theme .day-header { background-color: var(--variant-2-color); }
+
+        /* Variant 3 */
+        .v3-theme header { border-color: var(--variant-3-color); }
+        .v3-theme h2 { color: var(--variant-3-color); }
+        .v3-theme .meta-block { border-left-color: var(--variant-3-color); }
+        .v3-theme .day-header { background-color: var(--variant-3-color); }
+
+        /* PRINT SETTINGS */
+        @media print {
+            body {
+                background: none;
+                padding: 0;
+            }
+            .no-print {
+                display: none;
+            }
+            .page {
+                margin: 0;
+                box-shadow: none;
+                width: 100%;
+                height: auto;
+                page-break-after: always; /* Force new page for each variant */
+            }
+            .page:last-child {
+                page-break-after: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="no-print">
+        <button class="btn-print" onclick="window.print()">
+            <i class="fas fa-print"></i> Зберегти як PDF / Друкувати
+        </button>
+        <p style="color: #666; font-size: 14px; margin-top: 10px;">Порада: У налаштуваннях друку оберіть <strong>"Save as PDF"</strong> та увімкніть <strong>"Background graphics"</strong> для коректного відображення кольорів.</p>
+    </div>
+
+    <!-- =========================================
+         VARIANT 1: GRANTS & PROJECT MANAGEMENT
+         ========================================= -->
+    <div class="page v1-theme">
+        <header>
+            <div class="header-text">
+                <h1>Київський національний університет імені Тараса Шевченка</h1>
+                <h2>Менеджмент наукових грантів 2025</h2>
+                <h3>Інтенсивна програма: Hard Skills & Фінанси</h3>
+            </div>
+            <div class="logo-box">
+                <i class="fas fa-university"></i>
+                <div>KNU Science<br>Education</div>
+            </div>
+        </header>
+
+        <div class="meta-block">
+            <div class="meta-item">
+                <span class="meta-label">Цільова аудиторія</span>
+                Керівники НДЧ, Грант-менеджери, Заступники деканів
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Фокус програми</span>
+                Грантові заявки (94% запит), Бюджетування, Звітність
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Формат</span>
+                1.5 дні | Гібрид
+            </div>
+        </div>
+
+        <div class="desc-block">
+            <strong>Концепція:</strong> Програма розроблена як пряма відповідь на результати опитування, де 94% респондентів виявили потребу у навичках написання грантових заявок. Курс фокусується на "технічній" стороні: як пройти від ідеї до фінансованого проєкту, уникнути помилок у бюджеті та успішно пройти аудит.
+        </div>
+
+        <!-- DAY 1 -->
+        <div class="schedule-block">
+            <div class="day-header">
+                <i class="fas fa-calendar-day"></i> День 1: Екосистема грантів та Фінанси
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-time">Час</th>
+                        <th class="col-topic">Тема</th>
+                        <th class="col-speaker">Потенційні спікери</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>10:00 - 11:30</td>
+                        <td>
+                            <span class="badge" style="background:#ffebee; color:#b71c1c">Strategy</span><br>
+                            <strong>Міжнародні горизонти 2025:</strong> Horizon Europe, Cost, Erasmus+. Аналіз робочих програм.
+                        </td>
+                        <td>Експерти НКП Horizon Europe (КНУ/КПІ) або Офіс Горизонт Європа в Україні</td>
+                    </tr>
+                    <tr>
+                        <td>11:45 - 13:15</td>
+                        <td>
+                            <span class="badge" style="background:#e3f2fd; color:#0d47a1">National</span><br>
+                            <strong>Національний фонд досліджень (НФДУ):</strong> Аналіз помилок та критерії успіху.
+                        </td>
+                        <td>Ольга Полоцька (НФДУ) або експерти-рецензенти</td>
+                    </tr>
+                    <tr>
+                        <td>13:15 - 14:00</td>
+                        <td><em>Перерва на обід</em></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>14:00 - 15:30</td>
+                        <td>
+                            <span class="badge" style="background:#e8f5e9; color:#1b5e20">Workshop</span><br>
+                            <strong>Бюджетування наукового проєкту:</strong> Зарплати, накладні витрати, закупівлі.
+                        </td>
+                        <td>Планово-фінансовий відділ КНУ / Фінансові менеджери міжнародних проєктів</td>
+                    </tr>
+                    <tr>
+                        <td>15:45 - 17:00</td>
+                        <td>
+                            <span class="badge" style="background:#fff3e0; color:#e65100">Tools</span><br>
+                            <strong>Цифрові інструменти (PM):</strong> Notion, Trello, Excel для моніторингу виконання НДР.
+                        </td>
+                        <td>Практики з IT-сектору або успішні менеджери НДЧ</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- DAY 2 -->
+        <div class="schedule-block">
+            <div class="day-header">
+                <i class="fas fa-calendar-check"></i> День 2: Команди та Результат (0.5 дня)
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-time">Час</th>
+                        <th class="col-topic">Тема</th>
+                        <th class="col-speaker">Потенційні спікери</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>09:30 - 11:00</td>
+                        <td>
+                            <span class="badge" style="background:#f3e5f5; color:#4a148c">Consortium</span><br>
+                            <strong>Побудова консорціумів:</strong> Наукова дипломатія та пошук партнерів у ЄС.
+                        </td>
+                        <td>Відділ міжнародних зв'язків / Науковці з досвідом координації</td>
+                    </tr>
+                    <tr>
+                        <td>11:15 - 13:00</td>
+                        <td>
+                            <span class="badge" style="background:#fafafa; border:1px solid #333;">Panel</span><br>
+                            <strong>"Менеджер vs Бюрократ":</strong> Як оптимізувати процеси? (Відповідь на "pain point" з опитування).
+                        </td>
+                        <td>Модератор: Проректор. Учасники: Керівники Грант-офісів (Львівська Політехніка, СумДУ)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            Варіант 1 • Згенеровано на основі аналітики потреб менеджерів науки 2025
+        </div>
+    </div>
+
+    <!-- =========================================
+         VARIANT 2: LEADERSHIP & STRATEGY
+         ========================================= -->
+    <div class="page v2-theme">
+        <header>
+            <div class="header-text">
+                <h1>Київський національний університет імені Тараса Шевченка</h1>
+                <h2>Лідерство в науці 2025</h2>
+                <h3>Стратегія, Політики та Людський капітал</h3>
+            </div>
+            <div class="logo-box" style="color: var(--variant-2-color);">
+                <i class="fas fa-chess"></i>
+                <div>Leadership<br>Program</div>
+            </div>
+        </header>
+
+        <div class="meta-block">
+            <div class="meta-item">
+                <span class="meta-label">Цільова аудиторія</span>
+                Проректори, Директори НДІ, Топ-менеджмент
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Фокус програми</span>
+                Стратегія, Open Science, HR та Мотивація, Стійкість
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Формат</span>
+                1.5 дні | Стратегічні сесії
+            </div>
+        </div>
+
+        <div class="desc-block">
+            <strong>Концепція:</strong> Програма орієнтована на керівників вищої ланки (20% респондентів). Вона адресує виявлені проблеми: вигорання персоналу, низьку мотивацію та потребу у впровадженні нових політик (Open Science, Доброчесність) на інституційному рівні.
+        </div>
+
+        <!-- DAY 1 -->
+        <div class="schedule-block">
+            <div class="day-header">
+                <i class="fas fa-calendar-day"></i> День 1: Стратегія та Політики
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-time">Час</th>
+                        <th class="col-topic">Тема</th>
+                        <th class="col-speaker">Потенційні спікери</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>10:00 - 11:30</td>
+                        <td>
+                            <span class="badge" style="background:#e3f2fd; color:#0d47a1">Reform</span><br>
+                            <strong>Фінансування науки 2025:</strong> Зміни у законодавстві та нові можливості для ЗВО.
+                        </td>
+                        <td>Директорат науки МОН України (напр. Г. Мозолевич)</td>
+                    </tr>
+                    <tr>
+                        <td>11:45 - 13:15</td>
+                        <td>
+                            <span class="badge" style="background:#f3e5f5; color:#4a148c">Policy</span><br>
+                            <strong>Open Science та Доброчесність:</strong> Як імплементувати європейські стандарти.
+                        </td>
+                        <td>Олеся Ващук (РМУ) або представники НАЗЯВО</td>
+                    </tr>
+                    <tr>
+                        <td>13:15 - 14:15</td>
+                        <td><em>Перерва на обід</em></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>14:15 - 15:45</td>
+                        <td>
+                            <span class="badge" style="background:#ffebee; color:#b71c1c">Resilience</span><br>
+                            <strong>Ментальне здоров'я та Лідерство:</strong> Профілактика вигорання в наукових колективах під час війни.
+                        </td>
+                        <td>Психологи КНУ (Клініка ментального здоров'я) / Лабораторія психології</td>
+                    </tr>
+                    <tr>
+                        <td>16:00 - 17:00</td>
+                        <td>
+                            <span class="badge" style="background:#e8f5e9; color:#1b5e20">Discussion</span><br>
+                            <strong>KPI науковця:</strong> Оцінювання ефективності без бюрократії. Світове кафе.
+                        </td>
+                        <td>Фасилітована дискусія між учасниками</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- DAY 2 -->
+        <div class="schedule-block">
+            <div class="day-header">
+                <i class="fas fa-calendar-check"></i> День 2: Люди та Інституції (0.5 дня)
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-time">Час</th>
+                        <th class="col-topic">Тема</th>
+                        <th class="col-speaker">Потенційні спікери</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>09:30 - 11:00</td>
+                        <td>
+                            <span class="badge" style="background:#fff3e0; color:#e65100">HR</span><br>
+                            <strong>Мотивація персоналу:</strong> Нематеріальні стимули, кар'єрні траєкторії молодих вчених.
+                        </td>
+                        <td>HR-директори провідних ЗВО / Рада молодих вчених</td>
+                    </tr>
+                    <tr>
+                        <td>11:15 - 13:00</td>
+                        <td>
+                            <span class="badge" style="background:#fafafa; border:1px solid #333;">Vision</span><br>
+                            <strong>Університет Майбутнього:</strong> Інтеграція науки, освіти та бізнесу.
+                        </td>
+                        <td>Представники УКУ, КПІ (Best Practices)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            Варіант 2 • Згенеровано на основі аналітики потреб менеджерів науки 2025
+        </div>
+    </div>
+
+    <!-- =========================================
+         VARIANT 3: INNOVATION & AI
+         ========================================= -->
+    <div class="page v3-theme">
+        <header>
+            <div class="header-text">
+                <h1>Київський національний університет імені Тараса Шевченка</h1>
+                <h2>Наука, Бізнес та AI</h2>
+                <h3>Програма: Трансфер технологій та Інновації</h3>
+            </div>
+            <div class="logo-box" style="color: var(--variant-3-color);">
+                <i class="fas fa-rocket"></i>
+                <div>Innovation<br>Hub</div>
+            </div>
+        </header>
+
+        <div class="meta-block">
+            <div class="meta-item">
+                <span class="meta-label">Цільова аудиторія</span>
+                Відділи трансферу технологій, Інноватори, Патентознавці
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Фокус програми</span>
+                Штучний Інтелект (92% інтересу), IP, Комерціалізація, Стартапи
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Формат</span>
+                1.5 дні | Практикум (Hands-on)
+            </div>
+        </div>
+
+        <div class="desc-block">
+            <strong>Концепція:</strong> Програма фокусується на трендових темах: використання ШІ в науці (високий інтерес в опитуванні) та комерціалізація розробок (взаємодія з бізнесом). Мета — надати інструменти для перетворення науки на продукт.
+        </div>
+
+        <!-- DAY 1 -->
+        <div class="schedule-block">
+            <div class="day-header">
+                <i class="fas fa-calendar-day"></i> День 1: Технології та IP
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-time">Час</th>
+                        <th class="col-topic">Тема</th>
+                        <th class="col-speaker">Потенційні спікери</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>09:30 - 11:00</td>
+                        <td>
+                            <span class="badge" style="background:#f3e5f5; color:#4a148c">AI & Science</span><br>
+                            <strong>Штучний Інтелект для менеджера науки:</strong> Автоматизація, Scopus AI, написання звітів. Етика ШІ.
+                        </td>
+                        <td>ФКНК КНУ / AI-практики (Projector, Genesis)</td>
+                    </tr>
+                    <tr>
+                        <td>11:15 - 12:45</td>
+                        <td>
+                            <span class="badge" style="background:#e8f5e9; color:#1b5e20">Business</span><br>
+                            <strong>Комерціалізація (TRL):</strong> Оцінка готовності технології та пошук бізнес-партнерів.
+                        </td>
+                        <td>Sikorsky Challenge / Український фонд стартапів (USF)</td>
+                    </tr>
+                    <tr>
+                        <td>12:45 - 13:45</td>
+                        <td><em>Перерва на обід</em></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>13:45 - 15:15</td>
+                        <td>
+                            <span class="badge" style="background:#e3f2fd; color:#0d47a1">IP Law</span><br>
+                            <strong>Інтелектуальна власність 2025:</strong> Патентування в ЄС та захист в епоху ШІ.
+                        </td>
+                        <td>ІР офіс (УКРНОІВІ) / Патентні повірені</td>
+                    </tr>
+                    <tr>
+                        <td>15:30 - 17:00</td>
+                        <td>
+                            <span class="badge" style="background:#fff3e0; color:#e65100">Soft Skills</span><br>
+                            <strong>Пітчинг наукових ідей:</strong> Ораторська майстерність для спілкування з інвесторами.
+                        </td>
+                        <td>Тренери з публічних виступів (Business Speech)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- DAY 2 -->
+        <div class="schedule-block">
+            <div class="day-header">
+                <i class="fas fa-calendar-check"></i> День 2: Практика інновацій (0.5 дня)
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-time">Час</th>
+                        <th class="col-topic">Тема</th>
+                        <th class="col-speaker">Потенційні спікери</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>09:30 - 11:00</td>
+                        <td>
+                            <span class="badge" style="background:#ffebee; color:#b71c1c">Funding</span><br>
+                            <strong>Гранти для інновацій:</strong> EIC Accelerator, EIT та можливості для стартапів.
+                        </td>
+                        <td>Консультанти грантових програм для МСБ та науки</td>
+                    </tr>
+                    <tr>
+                        <td>11:15 - 13:00</td>
+                        <td>
+                            <span class="badge" style="background:#fafafa; border:1px solid #333;">Case Study</span><br>
+                            <strong>Наукові парки та Стартап-школи:</strong> Реальні кейси успіху та невдач.
+                        </td>
+                        <td>Науковий парк "Київська політехніка", Академ.Сіті (КАУ)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            Варіант 3 • Згенеровано на основі аналітики потреб менеджерів науки 2025
+        </div>
+    </div>
+
+</body>
+</html>
