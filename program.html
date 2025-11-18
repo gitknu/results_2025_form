@@ -26,15 +26,19 @@
             align-items: center;
         }
 
-        /* Print Button styling */
+        /* Print/Action Button styling */
         .no-print {
             margin-bottom: 20px;
             text-align: center;
             width: 100%;
             max-width: 210mm;
+            display: flex;
+            justify-content: center;
+            gap: 15px; /* Space between buttons */
+            flex-wrap: wrap;
         }
         
-        .btn-print {
+        .btn-action {
             background-color: #333;
             color: white;
             border: none;
@@ -44,12 +48,23 @@
             border-radius: 8px;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.2s;
+            transition: transform 0.2s, background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
-        .btn-print:hover {
+        .btn-action:hover {
             transform: translateY(-2px);
             background-color: #000;
+        }
+
+        .btn-copy {
+            background-color: #0056b3; /* Distinct color for copy action */
+        }
+
+        .btn-copy:hover {
+            background-color: #003d80;
         }
 
         /* A4 Page Container */
@@ -250,8 +265,11 @@
 <body>
 
     <div class="no-print">
-        <button class="btn-print" onclick="window.print()">
-            <i class="fas fa-print"></i> Зберегти як PDF / Друкувати
+        <button class="btn-action" onclick="window.print()">
+            <i class="fas fa-print"></i> PDF / Друкувати
+        </button>
+        <button class="btn-action btn-copy" onclick="copyProgramText()">
+            <i class="fas fa-copy"></i> Скопіювати текст
         </button>
     </div>
 
@@ -641,6 +659,33 @@
             Варіант 3 • Згенеровано на основі аналітики потреб менеджерів науки 2025
         </div>
     </div>
+
+    <script>
+        function copyProgramText() {
+            // Select all elements with class 'page' (the printable variants)
+            const pages = document.querySelectorAll('.page');
+            let fullText = "";
+
+            pages.forEach((page, index) => {
+                // Add a visible separator between variants for the plain text version
+                if (index > 0) {
+                    fullText += "\n\n====================================================================\n\n";
+                }
+                // Get the text content. innerText preserves newlines for block elements better than textContent
+                fullText += page.innerText;
+            });
+
+            // Use the Clipboard API to copy the text
+            navigator.clipboard.writeText(fullText).then(() => {
+                // Success feedback
+                alert("Текст програми успішно скопійовано! Тепер ви можете вставити його (Ctrl+V) у Word, Google Docs або будь-який текстовий редактор.");
+            }).catch(err => {
+                // Error handling
+                console.error('Не вдалося скопіювати текст: ', err);
+                alert("Виникла помилка при спробі копіювання. Будь ласка, спробуйте виділити та скопіювати текст вручну.");
+            });
+        }
+    </script>
 
 </body>
 </html>
