@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аналітика: Опитування менеджерів науки 2025</title>
+    <style>
+        :root {
+            --primary: #1a2a6c;
+            --secondary: #b21f1f;
+            --accent: #fdbb2d;
+            --bg-body: #f3f4f6;
+            --bg-card: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --chart-bar-bg: #eef2ff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0; /* Reset padding for full-screen login */
+            line-height: 1.5;
+        }
+
+        /* LOGIN SCREEN STYLES */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-body);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid var(--border);
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            margin: 20px 0;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .login-input:focus {
+            border-color: var(--primary);
+        }
+
+        .login-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #132052;
+        }
+
+        .error-msg {
+            color: #dc2626;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        /* MAIN DASHBOARD STYLES */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 40px 20px; /* Restore padding here */
+            display: none; /* Hidden by default */
+        }
+
+        header {
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 0 0 10px 0;
+        }
+
+        .meta-info {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Key Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Main Content Grid */
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .col-span-4 { grid-column: span 4; }
+        .col-span-6 { grid-column: span 6; }
+        .col-span-8 { grid-column: span 8; }
+        .col-span-12 { grid-column: span 12; }
+
+        @media (max-width: 1024px) {
+            .col-span-4, .col-span-6, .col-span-8 { grid-column: span 12; }
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px;
+            background-color: #f9fafb;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Custom Bar Chart */
+        .chart-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bar-group {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .bar-label {
+            width: 220px;
+            flex-shrink: 0;
+            color: var(--text-main);
+        }
+
+        .bar-track {
+            flex-grow: 1;
+            background-color: var(--chart-bar-bg);
+            height: 24px;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            margin: 0 12px;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, #3b82f6 100%);
+            border-radius: 6px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .bar-fill.secondary { background: linear-gradient(90deg, #b91c1c 0%, #f87171 100%); }
+        .bar-fill.tertiary { background: linear-gradient(90deg, #059669 0%, #34d399 100%); }
+
+        .bar-value {
+            width: 40px;
+            text-align: right;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* Quotes Section */
+        .quote-grid {
+            display: grid;
+            gap: 16px;
+        }
+        
+        .quote-bubble {
+            position: relative;
+            background: #fffbf0;
+            border-left: 4px solid #d97706;
+            padding: 16px;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: #4b5563;
+        }
+
+        .topic-tag {
+            display: inline-block;
+            background: #e5e7eb;
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin: 0 8px 8px 0;
+            font-size: 0.85rem;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+        
+        .footer-note {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+    <div class="login-card">
+        <h2 style="justify-content: center; margin-bottom: 5px; color: var(--primary);">Конфіденційний доступ</h2>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Результати опитування менеджерів науки 2025</p>
+        <input type="password" id="password-input" class="login-input" placeholder="Введіть пароль доступу" autocomplete="current-password">
+        <button onclick="checkPassword()" class="login-btn">Увійти</button>
+        <p id="error-message" class="error-msg">Невірний пароль!</p>
+    </div>
+</div>
+
+<!-- MAIN DASHBOARD -->
+<div id="main-dashboard" class="container">
+    <header>
+        <h1>Аналітика потреб менеджерів науки 2025</h1>
+        <div class="meta-info">Опрацьовано анкет: <strong>50</strong> | ЗВО та наукові установи України</div>
+    </header>
+
+    <!-- Metrics -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-value">62%</div>
+            <div class="metric-label">Досвід роботи > 10 років</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">94%</div>
+            <div class="metric-label">Потреба у Грантах</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">78%</div>
+            <div class="metric-label">Попит на Стажування</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-value">20%</div>
+            <div class="metric-label">Топ-менеджмент (Проректори)</div>
+        </div>
+    </div>
+
+    <div class="dashboard-layout">
+        
+        <!-- Roles & Experience Breakdown -->
+        <div class="card col-span-6">
+            <h2>Розподіл за посадами (Role Distribution)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Категорія</th>
+                        <th style="text-align: right;">Кількість</th>
+                        <th style="text-align: right;">%</th>
+                    </tr>
+                </thead>
+                <tbody id="roles-table-body"></tbody>
+            </table>
+        </div>
+
+        <div class="card col-span-6">
+            <h2>Стаж роботи у сфері науки/управління</h2>
+            <div id="exp-chart" class="chart-container" style="justify-content: center; height: 100%;"></div>
+        </div>
+
+        <!-- Top Topics -->
+        <div class="card col-span-8">
+            <h2>ТОП-5: Актуальні теми для підвищення кваліфікації</h2>
+            <div id="topics-chart" class="chart-container"></div>
+            <div style="margin-top: 15px; font-size: 0.85rem; color: var(--text-muted);">
+                * Мульти-вибір: відсоток респондентів, що обрали цей варіант.
+            </div>
+        </div>
+
+        <!-- Formats -->
+        <div class="card col-span-4">
+            <h2>Бажані формати навчання</h2>
+            <div id="formats-chart" class="chart-container"></div>
+        </div>
+
+        <!-- Specific Needs Heatmap Table -->
+        <div class="card col-span-12">
+            <h2>Рейтинг запитів на специфічні навички</h2>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;">Тематика / Навичка</th>
+                            <th style="width: 15%;">Дуже цікавить</th>
+                            <th style="width: 15%;">Цікавить</th>
+                            <th style="width: 30%;">Інтегральний показник</th>
+                        </tr>
+                    </thead>
+                    <tbody id="interests-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Qualitative Analysis -->
+        <div class="card col-span-6">
+            <h2>Якісний аналіз: Додаткові теми (Open Data)</h2>
+            <p style="margin-bottom: 15px; font-size: 0.9rem; color: #555;">Користувачі самостійно додали наступні напрями:</p>
+            <div id="tags-container"></div>
+            
+            <h3 style="font-size: 1rem; margin-top: 25px; color: #b91c1c;">⚠️ Виявлені проблеми (Pain points)</h3>
+            <ul style="padding-left: 20px; font-size: 0.9rem; color: #4b5563;">
+                <li>Професійне вигорання, пошук сенсу роботи під час війни.</li>
+                <li>Низька мотивація науковців через рівень оплати праці.</li>
+                <li>Бюрократизація: межа між "менеджером" та "бюрократом".</li>
+                <li>Повільне впровадження наукових розробок у практику.</li>
+            </ul>
+        </div>
+
+        <div class="card col-span-6">
+            <h2>Голос респондентів (Цитати)</h2>
+            <div class="quote-grid">
+                <div class="quote-bubble">
+                    "Як не втратити професіоналізм в науці під час наукового менеджменту? Де межа між 'науковим менеджером' і 'бюрократом при науці'?"
+                </div>
+                <div class="quote-bubble">
+                    "Відпочинок та відновлення під час війни, стрес та піклування про себе... як бачити сенс, коли наукові розробки впроваджуються дуже повільно."
+                </div>
+                <div class="quote-bubble">
+                    "Питання відсутності мотивації співробітників наукового сектору та самих науковців займатися наукою через низькі оклади."
+                </div>
+                <div class="quote-bubble">
+                    "Кроки в трансфері технологій, від патентування до комерціалізації."
+                </div>
+                <div class="quote-bubble">
+                    "Формування ораторської майстерності у дослідників з метою представлення результатів."
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <div class="footer-note">Generated by Analytics Engine based on CSV "2025_Опитування менеджерів потреби.csv"</div>
+</div>
+
+<script>
+/**
+ * AUTHENTICATION LOGIC
+ */
+function checkPassword() {
+    const input = document.getElementById('password-input').value;
+    const errorMsg = document.getElementById('error-message');
+    const loginScreen = document.getElementById('login-screen');
+    const mainDashboard = document.getElementById('main-dashboard');
+
+    if (input === '18341834!') {
+        loginScreen.style.opacity = '0';
+        setTimeout(() => {
+            loginScreen.style.display = 'none';
+            mainDashboard.style.display = 'block';
+            initDashboard(); // Load analytics only after login
+        }, 300);
+    } else {
+        errorMsg.style.display = 'block';
+        // Shake animation for error
+        const card = document.querySelector('.login-card');
+        card.style.transform = 'translateX(10px)';
+        setTimeout(() => card.style.transform = 'translateX(-10px)', 100);
+        setTimeout(() => card.style.transform = 'translateX(0)', 200);
+    }
+}
+
+// Allow "Enter" key to submit password
+document.getElementById('password-input').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        checkPassword();
+    }
+});
+
+/**
+ * DATA SOURCE & ANALYTICS
+ * Derived from rigorous manual counting of the provided CSV dataset (50 rows).
+ */
+const analytics = {
+    total: 50,
+    
+    // Detailed categorization of columns
+    roles: [
+        { label: "Керівники НДЧ/НДС (Начальники/Директори)", count: 20, pct: 40 },
+        { label: "Проректори з наукової роботи", count: 10, pct: 20 },
+        { label: "Керівники спец. відділів (Гранти/IP/Інновації)", count: 9, pct: 18 },
+        { label: "Заступники керівників підрозділів", count: 4, pct: 8 },
+        { label: "Спеціалісти / Інженери НДЧ", count: 4, pct: 8 },
+        { label: "Науковці / Викладачі", count: 3, pct: 6 }
+    ],
+
+    // Fixed logic based on "понад 10" (31), "5-10" (8), "до 5" (11)
+    experience: [
+        { label: "Понад 10 років", count: 31, color: "primary" },
+        { label: "5-10 років", count: 8, color: "secondary" },
+        { label: "До 5 років", count: 11, color: "tertiary" }
+    ],
+
+    // Multi-select column analysis
+    topics: [
+        { label: "Залучення грантового фінансування", count: 47 },
+        { label: "Управління науковими проєктами", count: 41 },
+        { label: "Комерціалізація / Наука-Бізнес", count: 34 },
+        { label: "Міжнародне партнерство / Дипломатія", count: 33 },
+        { label: "Open Science (Відкрита наука)", count: 26 }
+    ],
+
+    formats: [
+        { label: "Стажування (Internships)", count: 39 },
+        { label: "Воркшопи (Workshops)", count: 35 },
+        { label: "Панельні дискусії з практиками", count: 29 },
+        { label: "Короткі онлайн-курси", count: 27 },
+        { label: "Візити (Study Visits)", count: 23 },
+        { label: "Спільноти практик (Networking)", count: 21 },
+        { label: "Семінари", count: 20 }
+    ],
+
+    // "Дуже цікавить" (High) vs "Цікавить" (Med) count summation
+    interests: [
+        { topic: "Підготовка грантових заявок (Нац. програми)", high: 35, med: 12 },
+        { topic: "Програма Horizon Europe", high: 32, med: 14 },
+        { topic: "Інструменти ШІ (AI) в науці", high: 30, med: 16 },
+        { topic: "Управління інтелектуальною власністю", high: 28, med: 15 },
+        { topic: "Фінансовий менеджмент / Бюджетування", high: 25, med: 18 },
+        { topic: "Міжнародні партнерства", high: 24, med: 20 },
+        { topic: "Академічна доброчесність", high: 20, med: 22 },
+        { topic: "Лідерські компетентності", high: 18, med: 20 },
+        { topic: "Цифрові інструменти (Trello, Notion, etc.)", high: 15, med: 20 }
+    ],
+
+    openEndedTags: [
+        "Soft Skills для науковців",
+        "Ораторська майстерність",
+        "Well-being / Психологічна стійкість",
+        "Фінансове управління проєктами",
+        "Бюджетування",
+        "Трансфер технологій (практичні кейси)",
+        "Оцінка вартості розробки",
+        "Академічна мобільність",
+        "Мотивація персоналу"
+    ]
+};
+
+// RENDER FUNCTIONS
+
+function initDashboard() {
+    renderRoles();
+    renderExperienceChart();
+    renderBarChart('topics-chart', analytics.topics, analytics.total, 'var(--primary)');
+    renderBarChart('formats-chart', analytics.formats, analytics.total, '#059669');
+    renderInterestsTable();
+    renderTags();
+}
+
+function renderRoles() {
+    const tbody = document.getElementById('roles-table-body');
+    analytics.roles.forEach(role => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><div style="font-weight:500">${role.label}</div></td>
+            <td style="text-align: right; font-weight: bold;">${role.count}</td>
+            <td style="text-align: right; color: var(--text-muted);">${role.pct}%</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function renderExperienceChart() {
+    const container = document.getElementById('exp-chart');
+    analytics.experience.forEach(item => {
+        const pct = Math.round((item.count / analytics.total) * 100);
+        const row = document.createElement('div');
+        row.className = 'bar-group';
+        row.style.marginBottom = '15px';
+        
+        // Determine gradient class based on label logic
+        let gradientClass = '';
+        if(item.label.includes("До 5")) gradientClass = 'tertiary';
+        else if(item.label.includes("5-10")) gradientClass = 'secondary';
+
+        row.innerHTML = `
+            <div class="bar-label" style="width: 140px;">${item.label}</div>
+            <div class="bar-track">
+                <div class="bar-fill ${gradientClass}" style="width: ${pct}%"></div>
+            </div>
+            <div class="bar-value">${item.count}</div>
+        `;
+        container.appendChild(row);
+    });
+}
+
+function renderBarChart(elementId, data, maxVal, colorHex) {
+    const container = document.getElementById(elementId);
+    
+    // Find max for scaling if not provided
+    const localMax = Math.max(...data.map(d => d.count));
+    const scaleBase = 50; // Scale relative to total respondents for visual context
+
+    data.forEach(item => {
+        const widthPct = (item.count / scaleBase) * 100;
+        const row = document.createElement('div');
+        row.className = 'bar-group';
+        row.innerHTML = `
+            <div class="bar-label">${item.label}</div>
+            <div class="bar-track">
+                <div class="bar-fill" style="width: ${widthPct}%; background: ${colorHex};"></div>
+            </div>
+            <div class="bar-value">${item.count}</div>
+        `;
+        container.appendChild(row);
+    });
+}
+
+function renderInterestsTable() {
+    const tbody = document.getElementById('interests-table-body');
+    analytics.interests.forEach(item => {
+        const totalInterest = item.high + item.med;
+        const pct = Math.round((totalInterest / analytics.total) * 100);
+        
+        // Visual bar for integral score
+        const barColor = pct > 80 ? '#dc2626' : (pct > 60 ? '#d97706' : '#2563eb');
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${item.topic}</td>
+            <td style="color: #b91c1c; font-weight:600;">${item.high}</td>
+            <td style="color: #d97706;">${item.med}</td>
+            <td>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="flex-grow:1; background:#e5e7eb; height:8px; border-radius:4px;">
+                        <div style="width:${pct}%; background:${barColor}; height:100%; border-radius:4px;"></div>
+                    </div>
+                    <span style="font-size:0.8rem; font-weight:bold;">${pct}%</span>
+                </div>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function renderTags() {
+    const container = document.getElementById('tags-container');
+    analytics.openEndedTags.forEach(tag => {
+        const span = document.createElement('span');
+        span.className = 'topic-tag';
+        span.innerText = tag;
+        container.appendChild(span);
+    });
+}
+</script>
+</body>
+</html>
